@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manta Ray Studio - 네비게이션</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: transparent; padding: 12px; }
+
+  .main-box {
+    background: #f8f9ff;
+    border: 1px solid #e8eaf0;
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444466;
+    letter-spacing: 0.5px;
+  }
+
+  .divider { height: 1px; background: #e8eaf0; margin: 16px 0; }
+
+  .icon-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .icon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 72px;
+    padding: 10px 6px;
+    border-radius: 12px;
+    border: 1px solid #eeeef5;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .icon-card:hover {
+    border-color: #d0d0e8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(100,100,180,0.1);
+  }
+
+  .icon-card.active { border-color: #c0c0e0; box-shadow: 0 4px 12px rgba(100,100,180,0.12); }
+
+  .icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .icon-name {
+    font-size: 11px;
+    font-weight: 400;
+    color: #555566;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .arrow { font-size: 7px; color: #aaaacc; transition: transform 0.2s; }
+
+  .platform-item { position: relative; }
+
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 160px;
+    background: #ffffff;
+    border: 1px solid #e8eaf0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(80,80,160,0.12);
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  .dropdown.open { display: block; }
+
+  .dropdown-header {
+    padding: 10px 14px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #aaaacc;
+    text-transform: uppercase;
+    border-bottom: 1px solid #f0f0f8;
+  }
+
+  .dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    font-size: 13px;
+    color: #444455;
+    text-decoration: none;
+    transition: background 0.15s;
+    border-bottom: 1px solid #f8f8fc;
+  }
+
+  .dropdown a:last-child { border-bottom: none; }
+  .dropdown a:hover { background: #f4f4fc; color: #222233; }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #ccccdd; flex-shrink: 0; }
+
+  .add-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 72px;
+    padding: 10px 6px;
+    border-radius: 12px;
+    border: 1px dashed #d0d0e8;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.6;
+  }
+
+  .add-card:hover { opacity: 1; background: #f0f0ff; }
+  .add-card-icon { font-size: 18px; color: #aaaacc; }
+  .add-card-text { font-size: 10px; color: #aaaacc; }
+</style>
+</head>
+<body>
+<div class="main-box">
+
+  <!-- 구독 서비스 -->
+  <div class="section-header">
+    <span class="section-title">🔖 구독 서비스</span>
+  </div>
+  <div class="icon-row">
+    <a class="icon-card" href="https://claude.ai" target="_blank">
+      <div class="icon-wrap" style="background:#fef3e2"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='🌊'"></div>
+      <span class="icon-name">Claude</span>
+    </a>
+    <a class="icon-card" href="https://chat.openai.com" target="_blank">
+      <div class="icon-wrap" style="background:#f0f9f4"><img src="https://www.google.com/s2/favicons?domain=openai.com&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='🤖'"></div>
+      <span class="icon-name">ChatGPT</span>
+    </a>
+    <a class="icon-card" href="https://gemini.google.com" target="_blank">
+      <div class="icon-wrap" style="background:#e8f0fe"><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='💎'"></div>
+      <span class="icon-name">Gemini</span>
+    </a>
+    <a class="icon-card" href="https://www.genspark.ai" target="_blank">
+      <div class="icon-wrap" style="background:#f3e8ff"><img src="https://www.google.com/s2/favicons?domain=genspark.ai&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='⚡'"></div>
+      <span class="icon-name">Genspark</span>
+    </a>
+    <a class="icon-card" href="https://www.canva.com" target="_blank">
+      <div class="icon-wrap" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?domain=canva.com&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='🎨'"></div>
+      <span class="icon-name">Canva</span>
+    </a>
+    <a class="icon-card" href="https://www.capcut.com" target="_blank">
+      <div class="icon-wrap" style="background:#fce4ec"><img src="https://www.google.com/s2/favicons?domain=capcut.com&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='🎬'"></div>
+      <span class="icon-name">Capcut</span>
+    </a>
+    <a class="icon-card" href="https://www.notion.so" target="_blank">
+      <div class="icon-wrap" style="background:#f5f5f5"><img src="https://www.google.com/s2/favicons?domain=notion.so&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='📝'"></div>
+      <span class="icon-name">Notion</span>
+    </a>
+    <div class="add-card" onclick="window.open('https://github.com/edpsguy1/manta-ray-studio/edit/main/manta_ray_channels.html')">
+      <div class="add-card-icon">+</div>
+      <div class="add-card-text">추가</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 즐겨찾기 -->
+  <div class="section-header">
+    <span class="section-title">⭐ 즐겨찾기</span>
+  </div>
+  <div class="icon-row">
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('geosang')">
+        <div class="icon-wrap" style="background:#fff8e1"><img src="https://edpsguy1.github.io/manta-ray-studio/images/거상스쿨.png" width="24" height="24" onerror="this.parentNode.innerHTML='🏫'"></div>
+        <span class="icon-name">거상스쿨</span>
+        <span class="arrow" id="arrow-geosang">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-geosang">
+        <div class="dropdown-header">거상스쿨</div>
+        <a href="https://geosangschool.com/" target="_blank"><span class="dot"></span>거상스쿨 홈</a>
+        <a href="https://cafe.naver.com/shopmanagement" target="_blank"><span class="dot"></span>네이버 카페</a>
+        <a href="https://www.youtube.com/channel/UChIP6whoNv-oGLePTXcDl-w" target="_blank"><span class="dot"></span>유튜브</a>
+        <a href="https://www.instagram.com/geosang.bruce/" target="_blank"><span class="dot"></span>인스타그램</a>
+        <a href="https://accounts.kakao.com/login/?continue=https%3A%2F%2Fcenter-pf.kakao.com%2F_pDEfl%2Fchats#login" target="_blank"><span class="dot"></span>카카오톡 채널</a>
+        <a href="https://drive.google.com/drive/my-drive" target="_blank"><span class="dot"></span>구글드라이브</a>
+      </div>
+    </div>
+    <div class="add-card" onclick="window.open('https://github.com/edpsguy1/manta-ray-studio/edit/main/manta_ray_channels.html')">
+      <div class="add-card-icon">+</div>
+      <div class="add-card-text">추가</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 플랫폼별 채널 -->
+  <div class="section-header">
+    <span class="section-title">📡 플랫폼별 채널</span>
+  </div>
+  <div class="icon-row">
+
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('youtube')">
+        <div class="icon-wrap" style="background:#fff0f0"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='▶️'"></div>
+        <span class="icon-name">유튜브</span>
+        <span class="arrow" id="arrow-youtube">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-youtube">
+        <div class="dropdown-header">유튜브 채널</div>
+        <a href="#" target="_blank"><span class="dot"></span>내 채널</a>
+        <a href="#" target="_blank"><span class="dot"></span>수랏간 김상궁</a>
+        <a href="#" target="_blank"><span class="dot"></span>정훈맘 만능스틱</a>
+        <a href="#" target="_blank"><span class="dot"></span>한영개발</a>
+      </div>
+    </div>
+
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('naver')">
+        <div class="icon-wrap" style="background:#e8f5e9"><img src="https://edpsguy1.github.io/manta-ray-studio/images/네이버블로그.ico" width="24" height="24" onerror="this.src='https://www.google.com/s2/favicons?domain=blog.naver.com&sz=32'"></div>
+        <span class="icon-name">네이버</span>
+        <span class="arrow" id="arrow-naver">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-naver">
+        <div class="dropdown-header">네이버 블로그</div>
+        <a href="#" target="_blank"><span class="dot"></span>내 블로그</a>
+        <a href="#" target="_blank"><span class="dot"></span>수랏간 블로그</a>
+        <a href="#" target="_blank"><span class="dot"></span>정훈맘 만능스틱</a>
+      </div>
+    </div>
+
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('insta')">
+        <div class="icon-wrap" style="background:#fce4ec"><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='📸'"></div>
+        <span class="icon-name">인스타</span>
+        <span class="arrow" id="arrow-insta">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-insta">
+        <div class="dropdown-header">인스타그램</div>
+        <a href="#" target="_blank"><span class="dot"></span>개인 계정</a>
+        <a href="#" target="_blank"><span class="dot"></span>수랏간 김상궁</a>
+        <a href="#" target="_blank"><span class="dot"></span>정훈맘 만능스틱</a>
+      </div>
+    </div>
+
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('threads')">
+        <div class="icon-wrap" style="background:#f3e8ff"><img src="https://www.google.com/s2/favicons?domain=threads.net&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='🧵'"></div>
+        <span class="icon-name">스레드</span>
+        <span class="arrow" id="arrow-threads">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-threads">
+        <div class="dropdown-header">스레드</div>
+        <a href="#" target="_blank"><span class="dot"></span>개인 계정</a>
+        <a href="#" target="_blank"><span class="dot"></span>수랏간 김상궁</a>
+        <a href="#" target="_blank"><span class="dot"></span>정훈맘 만능스틱</a>
+      </div>
+    </div>
+
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('kakao')">
+        <div class="icon-wrap" style="background:#fffde7"><img src="https://www.google.com/s2/favicons?domain=kakao.com&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='💬'"></div>
+        <span class="icon-name">카카오</span>
+        <span class="arrow" id="arrow-kakao">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-kakao">
+        <div class="dropdown-header">카카오채널</div>
+        <a href="#" target="_blank"><span class="dot"></span>개인 계정</a>
+        <a href="#" target="_blank"><span class="dot"></span>수랏간 김상궁</a>
+        <a href="#" target="_blank"><span class="dot"></span>정훈맘 만능스틱</a>
+      </div>
+    </div>
+
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('drive')">
+        <div class="icon-wrap" style="background:#e8f0fe"><img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=32" width="24" height="24" onerror="this.parentNode.innerHTML='📁'"></div>
+        <span class="icon-name">구글드라이브</span>
+        <span class="arrow" id="arrow-drive">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-drive">
+        <div class="dropdown-header">구글드라이브</div>
+        <a href="https://drive.google.com/drive/my-drive" target="_blank"><span class="dot"></span>내 드라이브</a>
+      </div>
+    </div>
+
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('store')">
+        <div class="icon-wrap" style="background:#e8f5e9"><img src="https://edpsguy1.github.io/manta-ray-studio/images/네이버스토어.ico" width="24" height="24" onerror="this.src='https://www.google.com/s2/favicons?domain=smartstore.naver.com&sz=32'"></div>
+        <span class="icon-name">스마트스토어</span>
+        <span class="arrow" id="arrow-store">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-store">
+        <div class="dropdown-header">스마트스토어</div>
+        <a href="#" target="_blank"><span class="dot"></span>수랏간 김상궁</a>
+        <a href="#" target="_blank"><span class="dot"></span>정훈맘 만능스틱</a>
+      </div>
+    </div>
+
+    <div class="add-card" onclick="window.open('https://github.com/edpsguy1/manta-ray-studio/edit/main/manta_ray_channels.html')">
+      <div class="add-card-icon">+</div>
+      <div class="add-card-text">추가</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let current = null;
+function toggle(id) {
+  const dropdown = document.getElementById('dropdown-' + id);
+  const btn = dropdown.previousElementSibling;
+  const arrow = document.getElementById('arrow-' + id);
+  if (current && current !== id) {
+    document.getElementById('dropdown-' + current).classList.remove('open');
+    document.getElementById('dropdown-' + current).previousElementSibling.classList.remove('active');
+    document.getElementById('arrow-' + current).style.transform = 'rotate(0deg)';
+  }
+  if (dropdown.classList.contains('open')) {
+    dropdown.classList.remove('open');
+    btn.classList.remove('active');
+    arrow.style.transform = 'rotate(0deg)';
+    current = null;
+  } else {
+    dropdown.classList.add('open');
+    btn.classList.add('active');
+    arrow.style.transform = 'rotate(180deg)';
+    current = id;
+  }
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.platform-item')) {
+    if (current) {
+      document.getElementById('dropdown-' + current).classList.remove('open');
+      document.getElementById('dropdown-' + current).previousElementSibling.classList.remove('active');
+      document.getElementById('arrow-' + current).style.transform = 'rotate(0deg)';
+      current = null;
+    }
+  }
+});
+</script>
+</body>
+</html>
