@@ -210,10 +210,6 @@
         <a href="https://drive.google.com/drive/my-drive" target="_blank"><span class="dot"></span>구글드라이브</a>
       </div>
     </div>
-    <a class="icon-card" href="https://drive.google.com/drive/my-drive" target="_blank">
-      <div class="icon-wrap" style="background:#e8f0fe"><img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=32" width="24" height="24" onerror="this.onerror=null;this.parentNode.innerHTML='📁'"></div>
-      <span class="icon-name">내 드라이브</span>
-    </a>
     <div class="add-card" onclick="window.open('https://github.com/edpsguy1/manta-ray-studio/edit/main/manta_ray_channels.html')">
       <div class="add-card-icon">+</div>
       <div class="add-card-text">추가</div>
@@ -286,6 +282,18 @@
     </div>
 
     <div class="platform-item">
+      <div class="icon-card" onclick="toggle('drive')">
+        <div class="icon-wrap" style="background:#e8f0fe"><img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=32" width="24" height="24" onerror="this.onerror=null;this.parentNode.innerHTML='📁'"></div>
+        <span class="icon-name">구글드라이브</span>
+        <span class="arrow" id="arrow-drive">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-drive">
+        <div class="dropdown-header">구글드라이브</div>
+        <a href="https://drive.google.com/drive/my-drive" target="_blank"><span class="dot"></span>내 드라이브</a>
+      </div>
+    </div>
+
+    <div class="platform-item">
       <div class="icon-card" onclick="toggle('naverstore')">
         <div class="icon-wrap" style="background:#e8f5e9"><img src="https://edpsguy1.github.io/manta-ray-studio/images/naverstore.ico" width="24" height="24" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=smartstore.naver.com&sz=32'"></div>
         <span class="icon-name">스마트스토어</span>
@@ -293,6 +301,19 @@
       </div>
       <div class="dropdown" id="dropdown-naverstore">
         <div class="dropdown-header">스마트스토어</div>
+        <a href="#" target="_blank"><span class="dot"></span>수랏간 김상궁</a>
+        <a href="#" target="_blank"><span class="dot"></span>정훈맘 만능스틱</a>
+      </div>
+    </div>
+
+    <div class="platform-item">
+      <div class="icon-card" onclick="toggle('coupang')">
+        <div class="icon-wrap" style="background:#fff3e0"><img src="https://www.google.com/s2/favicons?domain=coupang.com&sz=32" width="24" height="24" onerror="this.onerror=null;this.parentNode.innerHTML='🛍️'"></div>
+        <span class="icon-name">쿠팡</span>
+        <span class="arrow" id="arrow-coupang">▼</span>
+      </div>
+      <div class="dropdown" id="dropdown-coupang">
+        <div class="dropdown-header">쿠팡</div>
         <a href="#" target="_blank"><span class="dot"></span>수랏간 김상궁</a>
         <a href="#" target="_blank"><span class="dot"></span>정훈맘 만능스틱</a>
       </div>
