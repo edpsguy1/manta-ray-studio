@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manta Ray Studio - 대시보드</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: transparent; padding: 8px; }
+
+  .db-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 10px;
+  }
+
+  .card {
+    background: #ffffff;
+    border: 1px solid #f0f0f5;
+    border-radius: 14px;
+    padding: 14px 16px;
+    transition: all 0.2s;
+  }
+  .card:hover { border-color: #d8d8e8; box-shadow: 0 4px 12px rgba(100,100,180,0.08); }
+  .card-top { height: 4px; margin: -14px -16px 12px; border-radius: 14px 14px 0 0; }
+  .card-icon { font-size: 26px; margin-bottom: 6px; }
+  .card-title { font-size: 18px; font-weight: 600; color: #222233; margin-bottom: 2px; }
+  .card-desc { font-size: 12px; color: #888899; margin-bottom: 10px; }
+
+  .card-body { display: flex; gap: 10px; align-items: flex-start; }
+
+  .left { display: flex; flex-direction: column; gap: 4px; min-width: 90px; }
+  .btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 8px; border-radius: 8px;
+    border: 1px solid #f0f0f5; background: #fafafa;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn:hover { border-color: #d0d0e8; background: #f4f4ff; }
+  .btn.active { border-color: #c0c0e0; background: #eeeeff; }
+  .btn-icon { font-size: 14px; flex-shrink: 0; }
+  .btn-label { font-size: 12px; color: #666677; white-space: nowrap; }
+  .btn.active .btn-label { color: #333366; font-weight: 500; }
+
+  .vline { width: 1px; background: #f0f0f5; align-self: stretch; flex-shrink: 0; }
+  .right { flex: 1; min-height: 90px; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .stat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 0; border-bottom: 1px solid #f5f5f8; font-size: 13px;
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { color: #888899; }
+  .stat-val { font-weight: 600; color: #222233; font-size: 14px; }
+
+  .bar-section { display: flex; flex-direction: column; gap: 7px; }
+  .bar-meta { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
+  .bar-name { color: #888899; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 85px; }
+  .bar-pct { color: #444455; font-weight: 500; }
+  .bar-wrap { height: 5px; background: #f0f0f5; border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+
+  .todo-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 0; border-bottom: 1px solid #f5f5f8; font-size: 12px;
+  }
+  .todo-row:last-child { border-bottom: none; }
+  .todo-name { color: #555566; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 72px; }
+  .todo-badges { display: flex; gap: 3px; }
+  .badge { padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+  .badge-ing { background: #e8f5e9; color: #2e7d32; }
+  .badge-done { background: #f5f5f8; color: #888899; }
+
+  .link-list { display: flex; flex-direction: column; gap: 5px; }
+  .link-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 8px; border-radius: 7px;
+    border: 1px solid #f0f0f5; background: #fafafa;
+    cursor: pointer; text-decoration: none; transition: all 0.15s;
+  }
+  .link-item:hover { background: #f0f0ff; border-color: #d8d8e8; }
+  .link-icon { font-size: 13px; flex-shrink: 0; }
+  .link-label { font-size: 12px; color: #555566; }
+</style>
+</head>
+<body>
+<div class="db-grid">
+
+  <!-- 📚 교육 -->
+  <div class="card">
+    <div class="card-top" style="background:#534AB7"></div>
+    <div class="card-icon">📚</div>
+    <div class="card-title">교육</div>
+    <div class="card-desc">12주 AI 커리큘럼 진행 현황</div>
+    <div class="card-body">
+      <div class="left">
+        <div class="btn active" onclick="showView('edu','curriculum',this)">
+          <span class="btn-icon">🎓</span><span class="btn-label">커리큘럼</span>
+        </div>
+        <div class="btn" onclick="showView('edu','task',this)">
+          <span class="btn-icon">✅</span><span class="btn-label">과제 관리</span>
+        </div>
+        <div class="btn" onclick="showView('edu','progress',this)">
+          <span class="btn-icon">📈</span><span class="btn-label">진행률</span>
+        </div>
+      </div>
+      <div class="vline"></div>
+      <div class="right">
+        <div class="view active" id="edu-curriculum">
+          <div class="stat-row"><span class="stat-label">수강중</span><span class="stat-val" style="color:#534AB7">1</span></div>
+          <div class="stat-row"><span class="stat-label">완료 주차</span><span class="stat-val">3</span></div>
+          <div class="stat-row"><span class="stat-label">전체 주차</span><span class="stat-val">12</span></div>
+        </div>
+        <div class="view" id="edu-task">
+          <div class="todo-row"><span class="todo-name">수강 후기</span><div class="todo-badges"><span class="badge badge-ing">진행 2</span><span class="badge badge-done">완료 1</span></div></div>
+          <div class="todo-row"><span class="todo-name">과제 제출</span><div class="todo-badges"><span class="badge badge-ing">진행 3</span><span class="badge badge-done">완료 1</span></div></div>
+          <div class="todo-row"><span class="todo-name">커뮤니티</span><div class="todo-badges"><span class="badge badge-done">완료 1</span></div></div>
+        </div>
+        <div class="view" id="edu-progress">
+          <div class="bar-section">
+            <div><div class="bar-meta"><span class="bar-name">1주차</span><span class="bar-pct">100%</span></div><div class="bar-wrap"><div class="bar-fill" style="width:100%;background:#534AB7"></div></div></div>
+            <div><div class="bar-meta"><span class="bar-name">2주차</span><span class="bar-pct">100%</span></div><div class="bar-wrap"><div class="bar-fill" style="width:100%;background:#534AB7"></div></div></div>
+            <div><div class="bar-meta"><span class="bar-name">3주차</span><span class="bar-pct">25%</span></div><div class="bar-wrap"><div class="bar-fill" style="width:25%;background:#534AB7"></div></div></div>
+            <div><div class="bar-meta"><span class="bar-name">4주차~</span><span class="bar-pct">0%</span></div><div class="bar-wrap"><div class="bar-fill" style="width:0%"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🗂️ 실무 -->
+  <div class="card">
+    <div class="card-top" style="background:#1D9E75"></div>
+    <div class="card-icon">🗂️</div>
+    <div class="card-title">실무</div>
+    <div class="card-desc">프로젝트별 할 일 및 진행률</div>
+    <div class="card-body">
+      <div class="left">
+        <div class="btn active" onclick="showView('work','project',this)">
+          <span class="btn-icon">📋</span><span class="btn-label">프로젝트</span>
+        </div>
+        <div class="btn" onclick="showView('work','todo',this)">
+          <span class="btn-icon">☑️</span><span class="btn-label">할 일</span>
+        </div>
+        <div class="btn" onclick="showView('work','progress',this)">
+          <span class="btn-icon">📊</span><span class="btn-label">진행률</span>
+        </div>
+      </div>
+      <div class="vline"></div>
+      <div class="right">
+        <div class="view active" id="work-project">
+          <div class="stat-row"><span class="stat-label">진행중</span><span class="stat-val" style="color:#1D9E75">8</span></div>
+          <div class="stat-row"><span class="stat-label">완료</span><span class="stat-val">0</span></div>
+          <div class="stat-row"><span class="stat-label">전체</span><span class="stat-val">8</span></div>
+        </div>
+        <div class="view" id="work-todo">
+          <div class="todo-row"><span class="todo-name">블로그 포스팅</span><div class="todo-badges"><span class="badge badge-ing">진행 3</span><span class="badge badge-done">완료 0</span></div></div>
+          <div class="todo-row"><span class="todo-name">인스타 업로드</span><div class="todo-badges"><span class="badge badge-ing">진행 2</span><span class="badge badge-done">완료 1</span></div></div>
+          <div class="todo-row"><span class="todo-name">유튜브 편집</span><div class="todo-badges"><span class="badge badge-ing">진행 1</span><span class="badge badge-done">완료 0</span></div></div>
+          <div class="todo-row"><span class="todo-name">스레드 작성</span><div class="todo-badges"><span class="badge badge-ing">진행 2</span><span class="badge badge-done">완료 0</span></div></div>
+        </div>
+        <div class="view" id="work-progress">
+          <div class="bar-section">
+            <div><div class="bar-meta"><span class="bar-name">수랏간</span><span class="bar-pct">40%</span></div><div class="bar-wrap"><div class="bar-fill" style="width:40%;background:#1D9E75"></div></div></div>
+            <div><div class="bar-meta"><span class="bar-name">정훈맘</span><span class="bar-pct">20%</span></div><div class="bar-wrap"><div class="bar-fill" style="width:20%;background:#1D9E75"></div></div></div>
+            <div><div class="bar-meta"><span class="bar-name">한영개발</span><span class="bar-pct">0%</span></div><div class="bar-wrap"><div class="bar-fill" style="width:0%"></div></div></div>
+            <div><div class="bar-meta"><span class="bar-name">법무법인</span><span class="bar-pct">0%</span></div><div class="bar-wrap"><div class="bar-fill" style="width:0%"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🤖 AI 레퍼런스 -->
+  <div class="card">
+    <div class="card-top" style="background:#378ADD"></div>
+    <div class="card-icon">🤖</div>
+    <div class="card-title">AI 레퍼런스</div>
+    <div class="card-desc">강의 및 레퍼런스 모음</div>
+    <div class="card-body">
+      <div class="left">
+        <div class="btn active" onclick="showView('ai','claude',this)">
+          <span class="btn-icon">⚡</span><span class="btn-label">Claude</span>
+        </div>
+        <div class="btn" onclick="showView('ai','gov',this)">
+          <span class="btn-icon">🏛️</span><span class="btn-label">정부지원</span>
+        </div>
+        <div class="btn" onclick="showView('ai','video',this)">
+          <span class="btn-icon">🎬</span><span class="btn-label">영상/대본</span>
+        </div>
+        <div class="btn" onclick="showView('ai','sns',this)">
+          <span class="btn-icon">📱</span><span class="btn-label">SNS</span>
+        </div>
+      </div>
+      <div class="vline"></div>
+      <div class="right">
+        <div class="view active" id="ai-claude">
+          <div class="link-list">
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">▶️</span><span class="link-label">Claude 개발 강의</span></a>
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">📝</span><span class="link-label">프롬프트 엔지니어링</span></a>
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">🔧</span><span class="link-label">API 활용 가이드</span></a>
+          </div>
+        </div>
+        <div class="view" id="ai-gov">
+          <div class="link-list">
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">🏛️</span><span class="link-label">정부지원사업 정보</span></a>
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">📋</span><span class="link-label">신청서 작성 가이드</span></a>
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">💰</span><span class="link-label">지원금 현황</span></a>
+          </div>
+        </div>
+        <div class="view" id="ai-video">
+          <div class="link-list">
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">🎬</span><span class="link-label">영상 기획 레퍼런스</span></a>
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">📜</span><span class="link-label">대본 템플릿</span></a>
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">✂️</span><span class="link-label">편집 참고 채널</span></a>
+          </div>
+        </div>
+        <div class="view" id="ai-sns">
+          <div class="link-list">
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">📸</span><span class="link-label">인스타 마케팅</span></a>
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">🧵</span><span class="link-label">스레드 전략</span></a>
+            <a class="link-item" href="#" target="_blank"><span class="link-icon">📱</span><span class="link-label">SNS 트렌드</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔍 리서치 -->
+  <div class="card">
+    <div class="card-top" style="background:#BA7517"></div>
+    <div class="card-icon">🔍</div>
+    <div class="card-title">리서치</div>
+    <div class="card-desc">키워드 분석 및 블로그 지수</div>
+    <div class="card-body">
+      <div class="left">
+        <div class="btn active" onclick="showView('research','keyword',this)">
+          <span class="btn-icon">🔑</span><span class="btn-label">키워드</span>
+        </div>
+        <div class="btn" onclick="showView('research','blog',this)">
+          <span class="btn-icon">🥝</span><span class="btn-label">블로그지수</span>
+        </div>
+        <div class="btn" onclick="showView('research','shop',this)">
+          <span class="btn-icon">🛒</span><span class="btn-label">쇼핑키워드</span>
+        </div>
+        <div class="btn" onclick="showView('research','trend',this)">
+          <span class="btn-icon">📈</span><span class="btn-label">트렌드</span>
+        </div>
+      </div>
+      <div class="vline"></div>
+      <div class="right">
+        <div class="view active" id="research-keyword">
+          <div class="link-list">
+            <a class="link-item" href="https://keywordmaster.co.kr" target="_blank"><span class="link-icon">🔑</span><span class="link-label">키워드마스터</span></a>
+            <a class="link-item" href="https://blackkiwi.net" target="_blank"><span class="link-icon">🥝</span><span class="link-label">블랙키위</span></a>
+          </div>
+        </div>
+        <div class="view" id="research-blog">
+          <div class="link-list">
+            <a class="link-item" href="https://blackkiwi.net" target="_blank"><span class="link-icon">🥝</span><span class="link-label">블랙키위 지수체크</span></a>
+            <a class="link-item" href="https://searchadvisor.naver.com" target="_blank"><span class="link-icon">📊</span><span class="link-label">서치어드바이저</span></a>
+          </div>
+        </div>
+        <div class="view" id="research-shop">
+          <div class="link-list">
+            <a class="link-item" href="https://www.itemscout.io" target="_blank"><span class="link-icon">🛒</span><span class="link-label">아이템스카우트</span></a>
+          </div>
+        </div>
+        <div class="view" id="research-trend">
+          <div class="link-list">
+            <a class="link-item" href="https://trends.naver.com" target="_blank"><span class="link-icon">📈</span><span class="link-label">네이버 트렌드</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📊 분석 -->
+  <div class="card">
+    <div class="card-top" style="background:#639922"></div>
+    <div class="card-icon">📊</div>
+    <div class="card-title">분석</div>
+    <div class="card-desc">채널별 성과 및 콘텐츠 통계</div>
+    <div class="card-body">
+      <div class="left">
+        <div class="btn active" onclick="showView('analytics','channel',this)">
+          <span class="btn-icon">📺</span><span class="btn-label">채널성과</span>
+        </div>
+        <div class="btn" onclick="showView('analytics','content',this)">
+          <span class="btn-icon">📉</span><span class="btn-label">콘텐츠</span>
+        </div>
+        <div class="btn" onclick="showView('analytics','revenue',this)">
+          <span class="btn-icon">💰</span><span class="btn-label">수익현황</span>
+        </div>
+      </div>
+      <div class="vline"></div>
+      <div class="right">
+        <div class="view active" id="analytics-channel">
+          <div class="stat-row"><span class="stat-label">유튜브 구독자</span><span class="stat-val">-</span></div>
+          <div class="stat-row"><span class="stat-label">인스타 팔로워</span><span class="stat-val">-</span></div>
+          <div class="stat-row"><span class="stat-label">블로그 방문자</span><span class="stat-val">-</span></div>
+        </div>
+        <div class="view" id="analytics-content">
+          <div class="stat-row"><span class="stat-label">이번달 발행</span><span class="stat-val">-</span></div>
+          <div class="stat-row"><span class="stat-label">평균 조회수</span><span class="stat-val">-</span></div>
+          <div class="stat-row"><span class="stat-label">총 콘텐츠</span><span class="stat-val">-</span></div>
+        </div>
+        <div class="view" id="analytics-revenue">
+          <div class="stat-row"><span class="stat-label">이번달 수익</span><span class="stat-val">-</span></div>
+          <div class="stat-row"><span class="stat-label">목표 달성률</span><span class="stat-val">-</span></div>
+          <div class="stat-row"><span class="stat-label">누적 수익</span><span class="stat-val">-</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛠️ 도구 -->
+  <div class="card">
+    <div class="card-top" style="background:#D4537E"></div>
+    <div class="card-icon">🛠️</div>
+    <div class="card-title">도구</div>
+    <div class="card-desc">디자인 · 영상 · AI 도구 모음</div>
+    <div class="card-body">
+      <div class="left">
+        <div class="btn active" onclick="showView('tools','design',this)">
+          <span class="btn-icon">🎨</span><span class="btn-label">디자인</span>
+        </div>
+        <div class="btn" onclick="showView('tools','video',this)">
+          <span class="btn-icon">🎞️</span><span class="btn-label">영상편집</span>
+        </div>
+        <div class="btn" onclick="showView('tools','ai',this)">
+          <span class="btn-icon">🤖</span><span class="btn-label">AI 도구</span>
+        </div>
+      </div>
+      <div class="vline"></div>
+      <div class="right">
+        <div class="view active" id="tools-design">
+          <div class="link-list">
+            <a class="link-item" href="https://www.canva.com" target="_blank"><span class="link-icon">🎨</span><span class="link-label">Canva</span></a>
+            <a class="link-item" href="https://www.miricanvas.com" target="_blank"><span class="link-icon">🖼️</span><span class="link-label">미리캔버스</span></a>
+            <a class="link-item" href="https://www.mangoboard.net" target="_blank"><span class="link-icon">🥭</span><span class="link-label">망고보드</span></a>
+          </div>
+        </div>
+        <div class="view" id="tools-video">
+          <div class="link-list">
+            <a class="link-item" href="https://www.capcut.com" target="_blank"><span class="link-icon">✂️</span><span class="link-label">Capcut</span></a>
+            <a class="link-item" href="https://kling.kuaishou.com" target="_blank"><span class="link-icon">🎬</span><span class="link-label">Kling AI</span></a>
+          </div>
+        </div>
+        <div class="view" id="tools-ai">
+          <div class="link-list">
+            <a class="link-item" href="https://claude.ai" target="_blank"><span class="link-icon">⚡</span><span class="link-label">Claude</span></a>
+            <a class="link-item" href="https://chat.openai.com" target="_blank"><span class="link-icon">🤖</span><span class="link-label">ChatGPT</span></a>
+            <a class="link-item" href="https://gemini.google.com" target="_blank"><span class="link-icon">💎</span><span class="link-label">Gemini</span></a>
+            <a class="link-item" href="https://www.genspark.ai" target="_blank"><span class="link-icon">✨</span><span class="link-label">Genspark</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showView(card, view, el) {
+  var prefix = card + '-';
+  document.querySelectorAll('[id^="' + prefix + '"]').forEach(function(v) {
+    v.classList.remove('active');
+  });
+  el.closest('.card-body').querySelectorAll('.btn').forEach(function(b) {
+    b.classList.remove('active');
+  });
+  document.getElementById(card + '-' + view).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
